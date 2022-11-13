@@ -1,0 +1,10 @@
+{% extends 'template.html' %}
+
+{% block head %}
+<title>Fehler</title>
+{% endblock %}
+
+{% block body %}
+<!-- Somit weiss Flask, dass wir eine Variable auswerten möchten. -->
+<h1>{{msg}}</h1>
+{% endblock %}

@@ -1,0 +1,17 @@
+ body {
+    background-color: rgb(206, 222, 236);
+    font-family: 'Raleway', sans-serif;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+a {
+    color:rgb(73, 109, 143);
+    font-weight: 700;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+a:hover {
+    color:rgb(6, 32, 56);
+    text-decoration: underline;
+}

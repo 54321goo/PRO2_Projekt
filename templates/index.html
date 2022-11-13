@@ -1,130 +1,32 @@
-<!DOCTYPE html>
-<!---Browser: Microsoft Edge / Editor: Joanne Hermann /
-    Quellen:
-    Bild 1 -> eigenes Bild
-    Bild 2 -> eigenes Bild
-    Bild 3 -> https://www.fuw.ch/article/sichtguthaben-bei-der-snb-steigen-deutlich/, abgerufen am 09.12.2021
-    Bild 4 -> eigenes Bild
-    Gif 1 -> https://www.drodd.com/images8/funny-gif/funny-gif2.gif, abgerufen am 09.12.2021
-    Gif 2 -> https://gifimage.net/wp-content/uploads/2017/07/funny-animal-gif-3.gif, abgerufen am 09.12.2021
-    Gif 3 -> https://66.media.tumblr.com/4fbac3899ed0501461b83201f9e2da8e/tumblr_mjcrcjQNU91rwy21po1_500.gif, abgerufen am 09.12.2021
-    Gif 4 -> https://66.media.tumblr.com/4fbac3899ed0501461b83201f9e2da8e/tumblr_mjcrcjQNU91rwy21po1_500.gif, abgerufen am 09.12.2021
--->
-<html lang="en">
-    <head>
-     
-    <title>Startseite - Joanne's Werbeauftritt</title>
+{% extends 'template.html' %}
 
-    <meta charset="UTF-8">
-    <meta name="author" content="Joanne Hermann">
-    <meta name="description" content="Werbeauftritt">
-    <meta name="keywords" content="Homepage, HTML, WWW, WINF, IW">
-    <meta name="date" content="01.11.2021">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block head %}
+<title>Hotel Reservationstool</title>
+{% endblock %}
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-        
-       <!--Formatierungs-Art gemäss Youtube-Video: https://www.youtube.com/watch?v=dOgFkZiVC8w&t=628s--> 
-        <style>
-            body {
-                font-family: 'Raleway', sans-serif;
-                background-color:rgb(206, 222, 236);
-                padding-left: 100px;
-                padding-right: 100px;
-            }
-
-            .headline {
-                color:rgb(6, 32, 56);
-                font-size: 46px;
-            }
-
-            .header-image {
-                width: 100%;
-                height: 400px;
-                object-fit: cover;
-            }
-
-            .image-container {
-                background-color: rgb(247, 250, 255);
-                padding: 16px;
-            }
-
-            .navbar {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            a {
-                color:rgb(73, 109, 143);
-                text-decoration: none;
-                margin-left: 15px;
-                font-weight: 700;
-            }
-
-            a:hover {
-                text-decoration: underline;
-                color:rgb(6, 32, 56)
-            }
-
-            .active {
-                color:rgb(16, 37, 58);
-                text-decoration: none;
-                margin-left: 15px;
-                font-weight: 700;
-            }
-
-        </style>
-
-    </head>
-    
-    <body>
-        <div class="navbar">
-            <h1 class="headline">Joanne <br> Hermann</h1>
-            
-            <div>
-                <a class="active" href="Website.html">Startseite</a>
-                <a href="Über mich.html">Über mich</a>
-                <a href="Beruflicher und schulischer Werdegang.html">Beruflicher und schulischer Werdegang</a>
-                <a href="Meine Freizeit.html">Meine Freizeit</a>
-                <a href="Sonstiges.html">Sonstiges</a>
-            </div>
-        </div>
-
-        <div class="image-container">
-            <b><i>Herzlich Willkommen auf meiner Webseite über mich!<br><br>
-Hier sind Sie richtig, wenn Sie etwas über mein Leben und meine berufliche Laufbahn erfahren möchten oder wenn Sie interessiert, wie ich meine Freizeit gestalte.<br><br>
-Viel Spass!</i></b><br><br>
-
-            <img class="header-image" src="Bilder/Joanne Bild.jpg">
-            <!--Bild 1-->
-
-            <div class="Kontaktdaten-container">
-                Sie können mich gerne, wie folgt, kontaktieren:<br>
-                <ul>
-                
-                    <li>Telefonnummer: 078 725 68 85</li>
-                    <li>E-Mail-Adresse:<a href="mailto:joanne.hermann00@gmail.com">joanne.hermann00@gmail.com</a></li>
-                    <li>LinkedIn-Name: Joanne Hermann</li>
-                    <li>Instagram: joanne.hma</li>
-                    <li>Anschrift: <br>Joanne Hermann <br>Birchwiesstrasse 4 <br>8114 Dänikon ZH</li>
-                </ul>
-            </div>
-
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2698.1881350857675!2d8.406636614965635!3d47.44727200696501!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47900d2fa549ff5d%3A0x832c4e045afed7a9!2sBirchwiesstrasse%204%2C%208114%20D%C3%A4nikon!5e0!3m2!1sde!2sch!4v1640104776336!5m2!1sde!2sch" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-            <!--Google Maps Standort gemäss Youtube-Video: https://www.youtube.com/watch?v=dOgFkZiVC8w&t=628s-->
-        </div>
-
-<section class="footer">
-    <i><br><br><b>Kontakt:</b><a href="mailto:joanne.hermann00@gmail.com">joanne.hermann00@gmail.com</a> / 078 725 68 85</i>
-</section>
-
-
-
-
-     
-    
-    </body>
-</html>
+{% block body %}
+<h1>Bitte füllen Sie das folgende Formular aus, um ein Hotelzimmer zu reservieren.</h1>
+<form method="POST">
+    <label for="nachname">Nachname</label>
+    <input type="text" name="nachname" id="nachname">
+    <label for="vorname">Vorname</label>
+    <input type="text" name="vorname" id="vorname"> <br>
+    <label for="anzahl_nächte">Anzahl Nächte</label>
+    <input type="text" name="anzahl_nächte" id="anzahl_nächte"> <br>
+    <label for="anzahl_personen">Anzahl Personen</label>
+    <input type="text" name="anzahl_personen" id="anzahl_personen"> <br>
+    <label for="strasse">Strasse</label>
+    <input type="text" name="strasse" id="strasse">
+    <label for="hausnummer">Hausnummer</label>
+    <input type="text" name="hausnummer" id="hausnummer"> <br>
+    <label for="plz">Postleitzahl</label>
+    <input type="text" name="plz" id="plz">
+    <label for="ort">Ort</label>
+    <input type="text" name="ort" id="ort"> <br>
+    <label for="land">Land</label>
+    <input type="text" name="land" id="land"> <br>
+    <label for="email">Email-Adresse</label>
+    <input type="text" name="email" id="email"> <br>
+    <button type="submit">Absenden</button>
+</form>
+{% endblock %}
