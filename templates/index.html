@@ -11,10 +11,58 @@
     <input type="text" name="nachname" id="nachname">
     <label for="vorname">Vorname</label>
     <input type="text" name="vorname" id="vorname"> <br>
-    <label for="anzahl_nächte">Anzahl Nächte</label>
-    <input type="text" name="anzahl_nächte" id="anzahl_nächte"> <br>
-    <label for="anzahl_personen">Anzahl Personen</label>
-    <input type="text" name="anzahl_personen" id="anzahl_personen"> <br>
+    <label for="check_in">Check in</label>
+    <input type="date" name="checkIn" id="check_in">
+    <label for="check_out">Check out</label>
+    <input type="date" name="checkOut" id="check_out"><br>
+    <div class="capacityInfo">
+        <h2>
+            Kapazitäten pro Zimmer
+        </h2>
+        <h3>
+            Einzelzimmer: 1 Person <br>
+            Doppelzimmer: 2 Personen <br>
+            Doppelzimmer Plus: 3 Personen <br>
+            Familienzimmer: 4 Personen <br>
+            Studio: 5 Personen
+        </h3>
+
+    </div>
+    <label for="anzahl_ez">Anzahl Einzelzimmer</label>
+    <select name="anzahl_ez" id="anzahl_ez">
+        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+        {%for i in range(0, 11)%}
+            <option value={{i}}>{{i}}</option>
+        {%endfor%}
+    </select>
+    <label for="anzahl_dz">Anzahl Doppelzimmer</label>
+    <select name="anzahl_dz" id="anzahl_dz">
+        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+        {%for i in range(0, 11)%}
+            <option value={{i}}>{{i}}</option>
+        {%endfor%}
+    </select>
+    <label for="anzahl_dzp">Anzahl Doppelzimmer Plus</label>
+    <select name="anzahl_dzp" id="anzahl_dzp">
+        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+        {%for i in range(0, 11)%}
+            <option value={{i}}>{{i}}</option>
+        {%endfor%}
+    </select>
+    <label for="anzahl_fz">Anzahl Familienzimmer</label>
+    <select name="anzahl_fz" id="anzahl_fz">
+        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+        {%for i in range(0, 11)%}
+            <option value={{i}}>{{i}}</option>
+        {%endfor%}
+    </select>
+    <label for="anzahl_st">Anzahl Studio</label>
+    <select name="anzahl_st" id="anzahl_st">
+        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+        {%for i in range(0, 11)%}
+            <option value={{i}}>{{i}}</option>
+        {%endfor%}
+    </select>
     <label for="strasse">Strasse</label>
     <input type="text" name="strasse" id="strasse">
     <label for="hausnummer">Hausnummer</label>
