@@ -5,76 +5,81 @@
 {% endblock %}
 
 {% block body %}
-<h1>Bitte füllen Sie das folgende Formular aus, um ein Hotelzimmer zu reservieren.</h1>
-<form method="POST">
-    <label for="nachname">Nachname</label>
-    <input type="text" name="nachname" id="nachname">
-    <label for="vorname">Vorname</label>
-    <input type="text" name="vorname" id="vorname"> <br>
-    <label for="check_in">Check in</label>
-    <input type="date" name="checkIn" id="check_in">
-    <label for="check_out">Check out</label>
-    <input type="date" name="checkOut" id="check_out"><br>
-    <div class="capacityInfo">
-        <h2>
-            Kapazitäten pro Zimmer
-        </h2>
-        <h3>
-            Einzelzimmer: 1 Person <br>
-            Doppelzimmer: 2 Personen <br>
-            Doppelzimmer Plus: 3 Personen <br>
-            Familienzimmer: 4 Personen <br>
-            Studio: 5 Personen
-        </h3>
+<h1>Bitte füllen Sie das folgende Formular aus, um Hotelzimmer zu reservieren.</h1>
+<div class="reservationForm">
+    <form method="POST">
+        <label for="nachname">Nachname</label>
+        <input type="text" name="nachname" id="nachname">
+        <label for="vorname">Vorname</label>
+        <input type="text" name="vorname" id="vorname"> <br>
 
-    </div>
-    <label for="anzahl_ez">Anzahl Einzelzimmer</label>
-    <select name="anzahl_ez" id="anzahl_ez">
-        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
-        {%for i in range(0, 11)%}
-            <option value={{i}}>{{i}}</option>
-        {%endfor%}
-    </select>
-    <label for="anzahl_dz">Anzahl Doppelzimmer</label>
-    <select name="anzahl_dz" id="anzahl_dz">
-        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
-        {%for i in range(0, 11)%}
-            <option value={{i}}>{{i}}</option>
-        {%endfor%}
-    </select>
-    <label for="anzahl_dzp">Anzahl Doppelzimmer Plus</label>
-    <select name="anzahl_dzp" id="anzahl_dzp">
-        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
-        {%for i in range(0, 11)%}
-            <option value={{i}}>{{i}}</option>
-        {%endfor%}
-    </select>
-    <label for="anzahl_fz">Anzahl Familienzimmer</label>
-    <select name="anzahl_fz" id="anzahl_fz">
-        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
-        {%for i in range(0, 11)%}
-            <option value={{i}}>{{i}}</option>
-        {%endfor%}
-    </select>
-    <label for="anzahl_st">Anzahl Studio</label>
-    <select name="anzahl_st" id="anzahl_st">
-        <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
-        {%for i in range(0, 11)%}
-            <option value={{i}}>{{i}}</option>
-        {%endfor%}
-    </select>
-    <label for="strasse">Strasse</label>
-    <input type="text" name="strasse" id="strasse">
-    <label for="hausnummer">Hausnummer</label>
-    <input type="text" name="hausnummer" id="hausnummer"> <br>
-    <label for="plz">Postleitzahl</label>
-    <input type="text" name="plz" id="plz">
-    <label for="ort">Ort</label>
-    <input type="text" name="ort" id="ort"> <br>
-    <label for="land">Land</label>
-    <input type="text" name="land" id="land"> <br>
-    <label for="email">Email-Adresse</label>
-    <input type="text" name="email" id="email"> <br>
-    <button type="submit">Absenden</button>
-</form>
+        <label for="check_in">Check in</label>
+        <input type="date" name="checkIn" id="check_in">
+        <label for="check_out">Check out</label>
+        <input type="date" name="checkOut" id="check_out"><br>
+
+        <div class="capacityInfo">
+            <h2>
+                Kapazitäten pro Zimmer
+            </h2>
+            <h3>
+                Einzelzimmer: 1 Person <br>
+                Doppelzimmer: 2 Personen <br>
+                Doppelzimmer Plus: 3 Personen <br>
+                Familienzimmer: 4 Personen <br>
+                Studio: 5 Personen
+            </h3>
+
+        </div>
+        <label for="numEinzelzimmer">Anzahl Einzelzimmer</label>
+        <select name="numEinzelzimmer" id="numEinzelzimmer">
+            <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+            {% for i in range(0, 11) %}
+                <option value={{i}}>{{i}}</option>
+            {% endfor %}
+        </select>
+        <label for="numDoppelzimmer">Anzahl Doppelzimmer</label>
+        <select name="numDoppelzimmer" id="numDoppelzimmer">
+            <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+            {% for i in range(0, 11) %}
+                <option value={{i}}>{{i}}</option>
+            {% endfor %}
+        </select>
+        <label for="numDoppelzimmerPlus">Anzahl Doppelzimmer Plus</label>
+        <select name="numDoppelzimmerPlus" id="numDoppelzimmerPlus">
+            <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+            {% for i in range(0, 11) %}
+                <option value={{i}}>{{i}}</option>
+            {% endfor %}
+        </select>
+        <label for="numFamilienzimmer">Anzahl Familienzimmer</label>
+        <select name="numFamilienzimmer" id="numFamilienzimmer">
+            <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+            {% for i in range(0, 11) %}
+                <option value={{i}}>{{i}}</option>
+            {% endfor %}
+        </select>
+        <label for="numStudio">Anzahl Studio</label>
+        <select name="numStudio" id="numStudio">
+            <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+            {% for i in range(0, 11) %}
+                <option value={{i}}>{{i}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="strasse">Strasse</label>
+        <input type="text" name="strasse" id="strasse">
+        <label for="hausnummer">Hausnummer</label>
+        <input type="text" name="hausnummer" id="hausnummer"> <br>
+        <label for="plz">Postleitzahl</label>
+        <input type="text" name="plz" id="plz">
+        <label for="ort">Ort</label>
+        <input type="text" name="ort" id="ort"> <br>
+        <label for="land">Land</label>
+        <input type="text" name="land" id="land"> <br>
+        <label for="email">Email-Adresse</label>
+        <input type="text" name="email" id="email"> <br>
+        <button type="submit">Absenden</button>
+    </form>
+</div>
 {% endblock %}

@@ -1,5 +1,7 @@
- body {
-    background-color: rgb(206, 222, 236);
+body {
+    background-color:  rgb(206, 222, 236);
+    background-image: url("../images/room.jpg");
+    background-size: 100vw 100vh;
     font-family: 'Raleway', sans-serif;
     padding-left: 100px;
     padding-right: 100px;
@@ -11,9 +13,22 @@ a {
     text-decoration: none;
 }
 
+.messageCard {
+    background: rgb(236, 234, 227);
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 2px 2px 5px;
+    padding:10px;
+    text-align:justify;
+}
+
 a:hover {
     color:rgb(6, 32, 56);
     text-decoration: underline;
+}
+
+h1 {
+color:rgb(236, 234, 227);
 }
 
 h2 {
@@ -25,12 +40,24 @@ h3 {
     font-size: 12px;
 }
 
+h4 {
+font-size: 20px;
+}
+
+.reservationForm {
+    background: rgb(236, 234, 227);
+    width: 60%;
+    margin: 0 auto;
+    box-shadow: 2px 2px 5px;
+    padding:10px;
+    text-align:justify;
+}
+
 .capacityInfo {
     background: #fff;
     font-size: 8px;
     border-style: solid;
-    box-shadow: 2px 2px 5px;
-    border-radius: 8px;
+    border-radius: 18px;
     margin: 20px;
     width: fit-content;
     padding:10px;

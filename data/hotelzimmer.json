@@ -1,0 +1,36 @@
+{
+    "Einzelzimmer":
+    {
+        "Kapazitaet": 1,
+        "ZimmerNrStart": 1,
+        "ZimmerNrEnd": 10
+    },
+
+    "Doppelzimmer":
+    {
+        "Kapazitaet": 2,
+        "ZimmerNrStart": 11,
+        "ZimmerNrEnd": 20
+    },
+
+    "DoppelzimmerPlus":
+    {
+        "Kapazitaet": 3,
+        "ZimmerNrStart": 21,
+        "ZimmerNrEnd": 30
+    },
+
+    "Familienzimmer":
+    {
+        "Kapazitaet": 4,
+        "ZimmerNrStart": 31,
+        "ZimmerNrEnd": 40
+    },
+
+    "Studio":
+    {
+        "Kapazitaet": 5,
+        "ZimmerNrStart": 41,
+        "ZimmerNrEnd": 50
+    }
+}

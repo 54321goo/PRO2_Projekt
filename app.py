@@ -1,101 +1,136 @@
 from flask import Flask, render_template, request
 import json
 from datetime import datetime
+# smtplib ist für das Versenden von Emails.
+import smtplib
+from email.message import EmailMessage
+
 app = Flask(__name__)
 
 
-def process_data(form):
+def send_confirmation_email(form, createdReservations):
+    msg = EmailMessage()
+    msg['Subject'] = 'Ihre Reservationsbestätigung'
+    msg['From'] = 'technical.user22@gmail.com'
+    msg['To'] = form['email']
+
+    rooms = f"{[reservation['Zimmer'] for reservation in createdReservations]}"
+
+    content = f"""Guten Tag {form['vorname']} {form['nachname']}
+    
+    Vielen Dank für Ihre Reservation in unserem Hotel.
+    
+    Hiermit bestätigen wir Ihnen die Buchung vom {form['checkIn']} bis {form['checkOut']}. 
+    Folgende Zimmer sind für Sie reserviert:
+    {rooms}
+    
+    Wir freuen uns Sie bald bei uns begrüssen zu dürfen.
+    
+    Freundliche Grüsse
+    Joanne Hermann
+    """
+
+    msg.set_content(content)
+    s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    s.login('technical.user22@gmail.com', 'uieyoxswlbjvdyvk')
+    s.send_message(msg)
+    s.quit()
+
+
+def create_reservation(form):
     # Überprüfung ob die gegebenen Daten im Formular die richtigen Datentypen sind.
-    print(form)
+    # print(form)
+    for field in form.keys():
+        if form[field] == "":
+            return render_template("message.html",title='Fehlermeldung',  msg="Mindestens ein Feld ist leer.")
     try:
-        num_nights = int(form["anzahl_ez"])
+        hnumber = int(form["hausnummer"])
     except ValueError:
-        return render_template("failure.html", msg = "Die Anzahl Nächte ist keine Zahl.")
+        return render_template("message.html",title='Fehlermeldung', 
+                               msg="Die Hausnummer ist keine Zahl. Wenn keine Hausnummer vorhanden ist, bitte 0 eingeben.")
     try:
-        num_pers = int(form["anzahl_dz"])
+        plz = int(form["plz"])
     except ValueError:
-        return render_template("failure.html", msg ="Die Anzahl Personen ist keine Zahl.")
-    try:
-        num_hnumber = int(form["hausnummer"])
-    except ValueError:
-        return render_template("failure.html", msg = "Die Hausnummer ist keine Zahl. Wenn keine Hausnummer vorhanden ist, bitte 0 eingeben.")
-    try:
-        num_plz = int(form["plz"])
-    except ValueError:
-        return render_template("failure.html", msg = "Die Postleitzahl ist keine Zahl.")
+        return render_template("message.html",title='Fehlermeldung', msg="Die Postleitzahl ist keine Zahl.")
 
-    # Hier lesen wir die reservations.json Datei ein
-    reservationen = []
-    with open("data/reservationen.json", "r") as reservations_json:
-        file_as_string = reservations_json.read()
-        reservationen = json.loads(file_as_string)
-
-    # Hier überprüfen wir, ob wir genügend Platz für den Gast haben
-
-    # Zuerst itererieren wir über alle Zimmer und finden heraus, welche überhaupt
-    # frei sind
-    targetCheckInDate = form["checkIn"]
-    targetCheckInDate = datetime.strptime(targetCheckInDate, "%Y-%m-%d")
-    targetCheckOutDate = form["checkOut"]
-    targetCheckOutDate = datetime.strptime(targetCheckOutDate, "%Y-%m-%d")
+    targetCheckInDate = datetime.strptime(form["checkIn"], "%Y-%m-%d")
+    targetCheckOutDate = datetime.strptime(form["checkOut"], "%Y-%m-%d")
 
     # überprüfe, ob Checkout > Checkin
     if targetCheckInDate >= targetCheckOutDate:
-        return render_template("failure.html", msg="Das Checkout Datum muss nach dem Checkin Datum sein.")
+        return render_template("message.html",title='Fehlermeldung', msg="Das Checkout Datum muss nach dem Checkin Datum sein.")
 
-    requestedRooms = {
-        "Einzelzimmer": int(form["anzahl_ez"]),
-        "Doppelzimmer": int(form["anzahl_dz"]),
-        "DoppelzimmerPlus":  int(form["anzahl_dzp"]),
-        "Familienzimmer": int(form["anzahl_fz"]),
-        "Studio": int(form["anzahl_st"])
-    }
+    #########################################################################################################################
 
-    freeRoomNumbers = {"Einzelzimmer": [str(i) for i in range(1,11)], "Doppelzimmer": [str(i) for i in range(11,21)], "DoppelzimmerPlus": [str(i) for i in range(21,31)], "Familienzimmer": [str(i) for i in range(31,41)], "Studio": [str(i) for i in range(41,51)]}
-    for reservation in reservationen:
+    # Hier lesen wir die unsere Dateien ein
+    with open("data/reservationen.json", "r") as file:
+        reservations = json.loads(file.read())
+
+    with open("data/hotelzimmer.json", "r") as file:
+        rooms = json.loads(file.read())
+
+    totalRequestedRooms = 0
+    numRequestedRooms = {}
+    freeRoomNumbers = {}
+    for roomType in rooms.keys():
+        requiredRooms = int(form["num" + roomType])
+        totalRequestedRooms += requiredRooms
+        numRequestedRooms[roomType] = requiredRooms
+        start = rooms[roomType]["ZimmerNrStart"]
+        end = rooms[roomType]["ZimmerNrEnd"]
+        freeRoomNumbers[roomType] = [str(i) for i in range(start, end + 1)]
+
+    if totalRequestedRooms == 0:
+        return render_template("message.html",title='Fehlermeldung', msg="Sie haben noch kein Zimmer ausgewählt.")
+
+    # Hier überprüfen wir, ob wir genügend Platz für den Gast haben
+    # Zuerst itererieren wir über alle Zimmer und finden heraus, welche überhaupt frei sind
+    for reservation in reservations:
         roomType = reservation["Zimmer"].split(" ")[0]
         roomNumber = reservation["Zimmer"].split(" ")[1]
-        checkInDate = reservation["Check-In"]
-        checkInDate = datetime.strptime(checkInDate, "%m/%d/%Y")
-        checkOutDate = reservation["Check-Out"]
-        checkOutDate = datetime.strptime(checkOutDate, "%m/%d/%Y")
+        checkInDate = datetime.strptime(reservation["Check-In"], "%m/%d/%Y")
+        checkOutDate = datetime.strptime(reservation["Check-Out"], "%m/%d/%Y")
 
-        # Falls sich die 2 Zeitintervalle nicht überschneiden, überspringen wir diese Reservation
+        # Falls sich die 2 Zeitintervalle nicht überschneiden, überspringen wir diese Reservation.
+        # Sonst ist das Zimmmer besetzt und wir müssen es von freeRoomNumbers entfernen.
         if targetCheckOutDate < checkInDate or targetCheckInDate > checkOutDate:
             continue
-        else:
-            try:
-                freeRoomNumbers[roomType].remove(roomNumber)
-            except ValueError:
-                pass
-    print(freeRoomNumbers)
+        elif roomNumber in freeRoomNumbers[roomType]:
+            freeRoomNumbers[roomType].remove(roomNumber)
+
     for roomType in freeRoomNumbers.keys():
-        if len(freeRoomNumbers[roomType]) >= requestedRooms[roomType]:
-            pass
-        else:
-            return "Error"
+        if len(freeRoomNumbers[roomType]) < numRequestedRooms[roomType]:
+            return render_template("message.html",title='Fehlermeldung',
+                                   msg=f'Leider sind zum gewünschten Zeitpunkt nicht genügend Zimmer des Typs "{roomType}" verfügbar.')
 
     # Hier wissen wir definitiv, dass genügend Zimmer vorhanden sind.
-    # Wir machen eine neue reservation und speichern diese in unsere Tabelle
-
-    i = 0
-    for req in requestedRooms.keys():
-        for _ in range(requestedRooms[req]):
-            i += 1
+    # Wir machen neue Reservationen und speichern diese in unsere Tabelle
+    createdReservations = []
+    for roomType in rooms.keys():
+        for room in range(numRequestedRooms[roomType]):
             newReservation = {
-                "id": len(reservationen) + i,
-                "Zimmer": req,
-                "name": form["nachname"] + " " + form["vorname"],
-                "Check-In": form["checkIn"],
-                "Check-Out": form["checkOut"]
+                "id": len(reservations) + 1,
+                "Zimmer": roomType + " " + freeRoomNumbers[roomType][0],
+                "Name": form["nachname"] + " " + form["vorname"],
+                "Check-In": targetCheckInDate.strftime("%m/%d/%Y"),
+                "Check-Out": targetCheckOutDate.strftime("%m/%d/%Y")
             }
-            reservationen.append(newReservation)
+            freeRoomNumbers[roomType].pop(0)
+            reservations.append(newReservation)
+            createdReservations.append(newReservation)
 
-    with open('data/reservationen.json', "w") as reservations_json:
-        reservations_json.write(json.dumps(reservationen))
+    with open('data/reservationen.json', "w") as file:
+        file.write(json.dumps(reservations))
+
+    send_confirmation_email(form, createdReservations)
+
+    successMsg = """
+    Ihre Reservation war erfolgreich. Sie erhalten in kürze eine Bestätigung per E-Mail. 
+    Wir freuen uns, Sie bald bei uns begrüssen zu dürfen und wünschen Ihnen eine angenehme Anreise!
+    """
+    return render_template("message.html", msg=successMsg)
 
 
-    return "Success"
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
@@ -103,8 +138,8 @@ def index():
         return render_template("index.html")
     elif request.method == 'POST':
         # Wenn die Webseite mit POST aufgerufen wird, dann werden die Daten ausgewertet.
-        return process_data(request.form)
-    else:
-        return "Not Implemented"
+        return create_reservation(request.form)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
