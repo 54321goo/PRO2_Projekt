@@ -32,7 +32,7 @@ def send_confirmation_email(form, createdReservations):
 
     msg.set_content(content)
     s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    s.login('technical.user22@gmail.com', 'dsqpjsfoqksmzejy')
+    s.login('technical.user22@gmail.com', 'oogiwwrjvlpdxqqt')
     s.send_message(msg)
     s.quit()
 
@@ -122,7 +122,7 @@ def create_reservation(form):
     with open('data/reservationen.json', "w") as file:
         file.write(json.dumps(reservations))
 
-    #send_confirmation_email(form, createdReservations)
+    send_confirmation_email(form, createdReservations)
 
     successMsg = """
     Ihre Reservation war erfolgreich. Sie erhalten in kürze eine Bestätigung per E-Mail. 
