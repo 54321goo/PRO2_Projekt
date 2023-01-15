@@ -1,9 +1,9 @@
 # Inhalt
-- [Problembeschreibung](problembeschreibung)
-- [Betrieb](betrieb)
-- [Benutzung](benutzung)
-- [Architektur](architektur)
-- [Verbesserungspotenzial](verbesserungspotenzial)
+- [Problembeschreibung](#problembeschreibung)
+- [Betrieb](#betrieb)
+- [Benutzung](#benutzung)
+- [Architektur](#architektur)
+- [Verbesserungspotenzial](#verbesserungspotenzial)
 
 # Problembeschreibung
 
