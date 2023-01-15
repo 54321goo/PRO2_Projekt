@@ -1,0 +1,12 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <title>Belegung</title>
+{% endblock %}
+
+{% block body %}
+    <h1>Belegung</h1>
+    {% for graph in graphs %}
+        <img src="{{ url_for('static', filename='images/' + graph) }}" class="center"/><br>
+    {% endfor %}
+{% endblock %}

@@ -1,6 +1,7 @@
 body {
     background-color:  rgb(206, 222, 236);
     background-image: url("../images/room.jpg");
+    background-attachment: fixed;
     background-size: 100vw 100vh;
     font-family: 'Raleway', sans-serif;
     padding-left: 100px;

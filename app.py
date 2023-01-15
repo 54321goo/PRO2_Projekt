@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
 # smtplib ist für das Versenden von Emails.
 import smtplib
 from email.message import EmailMessage
@@ -62,7 +63,7 @@ def create_reservation(form):
 
     #########################################################################################################################
 
-    # Hier lesen wir die unsere Dateien ein
+    # Hier werden die Dateien eingelesen
     with open("data/reservationen.json", "r") as file:
         reservations = json.loads(file.read())
 
@@ -83,7 +84,7 @@ def create_reservation(form):
     if totalRequestedRooms == 0:
         return render_template("message.html",title='Fehlermeldung', msg="Sie haben noch kein Zimmer ausgewählt.")
 
-    # Hier überprüfen wir, ob wir genügend Platz für den Gast haben
+    # Hier wird überprüft, ob genügend Platz für den Gast vorhanden ist
     # Zuerst itererieren wir über alle Zimmer und finden heraus, welche überhaupt frei sind
     for reservation in reservations:
         roomType = reservation["Zimmer"].split(" ")[0]
@@ -130,7 +131,48 @@ def create_reservation(form):
     """
     return render_template("message.html", msg=successMsg)
 
+@app.route("/belegung")
+def belegung():
+    # Hier lesen wir die unsere Dateien ein
+    with open("data/reservationen.json", "r") as file:
+        reservations = json.loads(file.read())
 
+    with open("data/hotelzimmer.json", "r") as file:
+        roomTypes = json.loads(file.read())
+
+    today = datetime.now()
+    days = [today + timedelta(days=x) for x in range(61)]
+    occupancies = {}
+    graphNames = []
+    # für jeden Zimmertyp analysieren wir die Belegung seperat
+    for roomType in roomTypes.keys():
+        occupancies[roomType] = []
+        reservationsOfType = list(filter(lambda x: x["Zimmer"].split(" ")[0] == roomType, reservations))
+        # für die nächsten 60 Tage schauen wir an, an welchen Tagen und wie viele Zimmer gebucht sind.
+        for day in days:
+            availableRoomsOfType = roomTypes[roomType]["ZimmerNrEnd"] - roomTypes[roomType]["ZimmerNrStart"] + 1
+            for reservation in reservationsOfType:
+                checkInDate = datetime.strptime(reservation["Check-In"], "%m/%d/%Y")
+                checkOutDate = datetime.strptime(reservation["Check-Out"], "%m/%d/%Y")
+                if day >= checkInDate and day < checkOutDate:
+                    availableRoomsOfType -= 1
+
+            occupancies[roomType].append(availableRoomsOfType)
+
+        name = f'{roomType}_belegung.png'
+        graphNames.append(name)
+        plt.figure(figsize=(8, 6), dpi=80)
+        plt.plot(days, occupancies[roomType], color="#ffd85c", linewidth=3)
+        plt.xticks(rotation=45)
+        plt.yticks(range(0, max(occupancies[roomType]) + 1, 1))
+        plt.title(f"Anzahl freie {roomType}", fontsize=18, color="#000000")
+        plt.xlabel("Tage", fontsize=18, color="#000000")
+        plt.ylabel("Anzahl", fontsize=18, color="#000000")
+        plt.savefig(f'static/images/{name}', bbox_inches='tight', transparent=False)
+        plt.clf()
+        # plt = diagramm
+
+    return render_template("occupancy.html", graphs=graphNames)
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
