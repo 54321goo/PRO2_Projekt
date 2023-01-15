@@ -48,7 +48,7 @@ Alle vorhandenen Dateien müssen von GitHub heruntergeladen werden. Anschliessen
 
 Zuerst muss die Webseite via [http://127.0.0.1:5000](http://127.0.0.1:5000/) geöffnet werden. Anschliessend gelingt man auf die Startseite, wo ein Formular ausgefüllt werden muss. Es können mehrere verschiedene Hotelzimmer mit einem Formular gebucht werden.
 
-![](image%20read%20me/bild1.png?raw=true)
+![Alt Text](image%20read%20me/bild1.png?raw=true)
 
 Nach erfolgreicher Eingabe der gültigen Daten und Prüfung der Zimmerkapazitäten wird die Buchung bestätigt und ein Bestätigungsmail wird versendet.
 
