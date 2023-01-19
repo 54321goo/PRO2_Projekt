@@ -27,6 +27,11 @@ Zuerst muss die Webseite via [http://127.0.0.1:5000](http://127.0.0.1:5000/) ge�
 
 ![](image%20read%20me/Bild1.png)
 
+Unter dem Button für das Absenden des Formulars befindet sich noch ein weiterer namens "Zimmerbelegung anzeigen". Dort gelangt man zu einer Übersicht der Belegung der verschiedenen Zimmertypen für die nächsten 60 Tage in Form von Liniendiagrammen.
+
+![](image%20read%20me/BildDiagramm.png)
+
+
 Nach erfolgreicher Eingabe der gültigen Daten und Prüfung der Zimmerkapazitäten wird die Buchung bestätigt und ein Bestätigungsmail wird versendet.
 
 ![](image%20read%20me/Bild2.png)
