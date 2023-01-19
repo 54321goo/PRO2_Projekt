@@ -1,3 +1,4 @@
+<!-- Hier wird auf das Template HTML verwiesen. -->
 {% extends 'template.html' %}
 
 {% block head %}
@@ -5,12 +6,13 @@
 {% endblock %}
 
 {% block body %}
-<!-- Somit weiss Flask, dass wir eine Variable auswerten möchten. -->
+<!-- Somit weiss Flask, dass eine Variable ausgewertet werden muss und anschliessend die Fehlermeldung/Nachricht erscheinen muss. -->
 <div class="messageCard">
     <h4>{{msg}}</h4>
 </div>
 
 <form>
+<!-- Mit diesem Button gelangt man auf die Startseite zurück. -->
  <input type="button" value="Zurück zur Startseite" onclick="history.back()">
 </form>
 {% endblock %}

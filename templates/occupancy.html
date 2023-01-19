@@ -1,3 +1,4 @@
+<!-- Hier wird auf das Template HTML verwiesen. -->
 {% extends 'template.html' %}
 
 {% block head %}
@@ -7,6 +8,7 @@
 {% block body %}
     <h1>Belegung</h1>
     {% for graph in graphs %}
+<!-- Hier werden die Diagramme in Form von Bildern eingefügt. -->
         <img src="{{ url_for('static', filename='images/' + graph) }}" class="center"/><br>
     {% endfor %}
 {% endblock %}

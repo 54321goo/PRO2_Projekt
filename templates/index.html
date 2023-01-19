@@ -1,9 +1,10 @@
+<!-- Hier wird auf das Template HTML verwiesen. -->
 {% extends 'template.html' %}
 
 {% block head %}
 <title>Hotel Reservationstool</title>
 {% endblock %}
-
+<!-- Hier wird das Formular mit den verschiedenen Felder erstellt. -->
 {% block body %}
 <h1>Bitte füllen Sie das folgende Formular aus, um Hotelzimmer zu reservieren.</h1>
 <div class="reservationForm">
@@ -33,7 +34,7 @@
         </div>
         <label for="numEinzelzimmer">Anzahl Einzelzimmer</label>
         <select name="numEinzelzimmer" id="numEinzelzimmer">
-            <!--Hier wird Jinja syntax verwendet, um die Dropdownliste dynamisch zu generieren. -->
+            <!--Hier wird Jinja syntax (Templating-Sprache für Python mit Regeln und Konstruten) verwendet, um die Dropdownliste dynamisch zu generieren. -->
             {% for i in range(0, 11) %}
                 <option value={{i}}>{{i}}</option>
             {% endfor %}
@@ -81,6 +82,7 @@
         <input type="text" name="email" id="email"> <br>
         <button type="submit">Absenden</button>
     </form>
+  <!--Button um zu den Diagrammen mit der Zimmerbelegung zu gelangen. -->
     <form action="/belegung">
         <button type="submit">Zimmerbelegung anzeigen</button>
     </form>

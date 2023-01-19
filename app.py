@@ -1,6 +1,10 @@
+# Flask importieren
 from flask import Flask, render_template, request
+# JSON importieren
 import json
+# Funktion notwendig, da das JSON File Daten in Form von einem Datum enthält.
 from datetime import datetime, timedelta
+# matplotlib ist für die Datenvisualisierung / Diagramm
 import matplotlib.pyplot as plt
 # smtplib ist für das Versenden von Emails.
 import smtplib
@@ -8,7 +12,7 @@ from email.message import EmailMessage
 
 app = Flask(__name__)
 
-
+# hier wird definiert, wie das Bestätigungsmail aussehen wird.Dabei werden auch Angaben aus den JSON Files integriert.
 def send_confirmation_email(form, createdReservations):
     msg = EmailMessage()
     msg['Subject'] = 'Ihre Reservationsbestätigung'
@@ -30,7 +34,7 @@ def send_confirmation_email(form, createdReservations):
     Freundliche Grüsse
     Joanne Hermann
     """
-
+# hier wird bestimmt, von welcher Mail-Adresse das Mail gesendet wird. In diesem Fall habe ich eine seperate Mail-Adresse erstellt.
     msg.set_content(content)
     s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
     s.login('technical.user22@gmail.com', 'oogiwwrjvlpdxqqt')
@@ -40,30 +44,33 @@ def send_confirmation_email(form, createdReservations):
 
 def create_reservation(form):
     # Überprüfung ob die gegebenen Daten im Formular die richtigen Datentypen sind.
-    # print(form)
+    # Fehlermeldung, wenn ein Feld leer ist.
     for field in form.keys():
         if form[field] == "":
             return render_template("message.html",title='Fehlermeldung',  msg="Mindestens ein Feld ist leer.")
     try:
+    # Es wird geprüft ob die Hausnummer ein Integer ist. Wenn nicht, dann wird eine Fehlermeldung versendet.
         hnumber = int(form["hausnummer"])
     except ValueError:
         return render_template("message.html",title='Fehlermeldung', 
                                msg="Die Hausnummer ist keine Zahl. Wenn keine Hausnummer vorhanden ist, bitte 0 eingeben.")
     try:
+    # Es wird geprüft ob die PLZ ein Integer ist. Wenn nicht, dann wird eine Fehlermeldung versendet.
         plz = int(form["plz"])
     except ValueError:
         return render_template("message.html",title='Fehlermeldung', msg="Die Postleitzahl ist keine Zahl.")
 
+    # Hier wird definiert, dass es sich um ein Datum in folgender Form handelt. -> Jahr Monat Tag
     targetCheckInDate = datetime.strptime(form["checkIn"], "%Y-%m-%d")
     targetCheckOutDate = datetime.strptime(form["checkOut"], "%Y-%m-%d")
 
-    # überprüfe, ob Checkout > Checkin
+    # Es wird überprüft, ob Checkout > Checkin ist. Wenn nicht, wird eine Fehlermedlung versendet.
     if targetCheckInDate >= targetCheckOutDate:
         return render_template("message.html",title='Fehlermeldung', msg="Das Checkout Datum muss nach dem Checkin Datum sein.")
 
     #########################################################################################################################
 
-    # Hier werden die Dateien eingelesen
+    # Hier werden die Dateien eingelesen, um zu schauen ob die Reservierung (Nutzereingabe in das Formular) im Bezug zur Auslastung überhaupt möglich ist.
     with open("data/reservationen.json", "r") as file:
         reservations = json.loads(file.read())
 
@@ -85,27 +92,27 @@ def create_reservation(form):
         return render_template("message.html",title='Fehlermeldung', msg="Sie haben noch kein Zimmer ausgewählt.")
 
     # Hier wird überprüft, ob genügend Platz für den Gast vorhanden ist
-    # Zuerst itererieren wir über alle Zimmer und finden heraus, welche überhaupt frei sind
+    # Zuerst wird über alle Zimmer itereriert und herausgefunden, welche überhaupt frei sind.
     for reservation in reservations:
         roomType = reservation["Zimmer"].split(" ")[0]
         roomNumber = reservation["Zimmer"].split(" ")[1]
         checkInDate = datetime.strptime(reservation["Check-In"], "%m/%d/%Y")
         checkOutDate = datetime.strptime(reservation["Check-Out"], "%m/%d/%Y")
 
-        # Falls sich die 2 Zeitintervalle nicht überschneiden, überspringen wir diese Reservation.
-        # Sonst ist das Zimmmer besetzt und wir müssen es von freeRoomNumbers entfernen.
+    # Falls sich die 2 Zeitintervalle nicht überschneiden, wird die jeweilige Reservation übersprungen.
+    # Sonst ist das Zimmmer besetzt und es wird von freeRoomNumbers entfernt, sodass nur noch die freien Zimmer vorhanden sind..
         if targetCheckOutDate < checkInDate or targetCheckInDate > checkOutDate:
             continue
         elif roomNumber in freeRoomNumbers[roomType]:
             freeRoomNumbers[roomType].remove(roomNumber)
-
+    # Hier wird geprüft ob die Anzahl freier Zimmer kleiner ist als die angefragte Anzahl. Wenn sie kleiner ist, dann hat es zu wenig freie Zimmer und eine Fehlermeldung entsteht.
     for roomType in freeRoomNumbers.keys():
         if len(freeRoomNumbers[roomType]) < numRequestedRooms[roomType]:
             return render_template("message.html",title='Fehlermeldung',
                                    msg=f'Leider sind zum gewünschten Zeitpunkt nicht genügend Zimmer des Typs "{roomType}" verfügbar.')
 
-    # Hier wissen wir definitiv, dass genügend Zimmer vorhanden sind.
-    # Wir machen neue Reservationen und speichern diese in unsere Tabelle
+    # Hier ist es definitiv, dass genügend Zimmer vorhanden sind.
+    # Es wird somit in der Tabelle im JSON File als neue Reservation gespeichert.
     createdReservations = []
     for roomType in rooms.keys():
         for room in range(numRequestedRooms[roomType]):
@@ -122,9 +129,9 @@ def create_reservation(form):
 
     with open('data/reservationen.json', "w") as file:
         file.write(json.dumps(reservations))
-
+    # Hier wird das Bestätigungsmail versendet.
     send_confirmation_email(form, createdReservations)
-
+    # Bei einer erfolgreichen Reservierung, gelangt der Nutzer auf eine Bestätigungsseite.
     successMsg = """
     Ihre Reservation war erfolgreich. Sie erhalten in kürze eine Bestätigung per E-Mail. 
     Wir freuen uns, Sie bald bei uns begrüssen zu dürfen und wünschen Ihnen eine angenehme Anreise!
@@ -133,22 +140,22 @@ def create_reservation(form):
 
 @app.route("/belegung")
 def belegung():
-    # Hier lesen wir die unsere Dateien ein
+    # Hier werden die JSON Dateien eingelesen, um die Belegung messen zu können.
     with open("data/reservationen.json", "r") as file:
         reservations = json.loads(file.read())
 
     with open("data/hotelzimmer.json", "r") as file:
         roomTypes = json.loads(file.read())
-
+    # Hier wird definiert, dass die Belegung der nächsten 60 Tage angeschaut wird.
     today = datetime.now()
     days = [today + timedelta(days=x) for x in range(61)]
     occupancies = {}
     graphNames = []
-    # für jeden Zimmertyp analysieren wir die Belegung seperat
+    # für jeden Zimmertyp wird die Belegung seperat analysiert.
     for roomType in roomTypes.keys():
         occupancies[roomType] = []
         reservationsOfType = list(filter(lambda x: x["Zimmer"].split(" ")[0] == roomType, reservations))
-        # für die nächsten 60 Tage schauen wir an, an welchen Tagen und wie viele Zimmer gebucht sind.
+
         for day in days:
             availableRoomsOfType = roomTypes[roomType]["ZimmerNrEnd"] - roomTypes[roomType]["ZimmerNrStart"] + 1
             for reservation in reservationsOfType:
@@ -161,6 +168,7 @@ def belegung():
 
         name = f'{roomType}_belegung.png'
         graphNames.append(name)
+        # Hier wird definiert, wie das Diagramm aussehen sollte. plt.  = Diagramm
         plt.figure(figsize=(8, 6), dpi=80)
         plt.plot(days, occupancies[roomType], color="#ffd85c", linewidth=3)
         plt.xticks(rotation=45)
@@ -170,7 +178,6 @@ def belegung():
         plt.ylabel("Anzahl", fontsize=18, color="#000000")
         plt.savefig(f'static/images/{name}', bbox_inches='tight', transparent=False)
         plt.clf()
-        # plt = diagramm
 
     return render_template("occupancy.html", graphs=graphNames)
 @app.route("/", methods=['GET', 'POST'])
