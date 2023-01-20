@@ -76,16 +76,20 @@ def create_reservation(form):
 
     with open("data/hotelzimmer.json", "r") as file:
         rooms = json.loads(file.read())
-
+    # Hier werden Variablen definiert, welche dann bei der Belegungsanalyse verwendet werden.
     totalRequestedRooms = 0
     numRequestedRooms = {}
     freeRoomNumbers = {}
     for roomType in rooms.keys():
         requiredRooms = int(form["num" + roomType])
+        # totalRequestedRooms ist die Gesamtzahl der vom Benutzer geforderten Zimmer. Wenn diese Zahl = 0 ist, dann wird eine Fehlermeldung angezeigt. (-> Letzte Zeile dieses Code-Blockes)
         totalRequestedRooms += requiredRooms
+        # numRequestedRooms ist ein dictionary wobei die jeweilige Zimmerkategorie der "key" ist und die Anzahl der angefragten Zimmer das "value".
         numRequestedRooms[roomType] = requiredRooms
         start = rooms[roomType]["ZimmerNrStart"]
         end = rooms[roomType]["ZimmerNrEnd"]
+        # freeRoomNumbers ist ein dictionary wobei die jeweilige Zimmerkategorie der "key" ist und "value" zunächst Listen mit Zimmernummern der entsprechenden Zimmerkategorien.
+        # nach der Belegungsanalyse sind dies die freien Zimmernummern.
         freeRoomNumbers[roomType] = [str(i) for i in range(start, end + 1)]
 
     if totalRequestedRooms == 0:
@@ -94,6 +98,7 @@ def create_reservation(form):
     # Hier wird überprüft, ob genügend Platz für den Gast vorhanden ist
     # Zuerst wird über alle Zimmer itereriert und herausgefunden, welche überhaupt frei sind.
     for reservation in reservations:
+    # mit dieser Split-Funktion wird die Zimmerkategorie von der Zimmerzahl getrennt. Wenn zum Beispiel Reservierung["Zimmer"] "Doppelzimmer 11" ist, wäre Reservierung["Zimmer"].split(" ") ["Doppelzimmer", "11"].
         roomType = reservation["Zimmer"].split(" ")[0]
         roomNumber = reservation["Zimmer"].split(" ")[1]
         checkInDate = datetime.strptime(reservation["Check-In"], "%m/%d/%Y")
@@ -123,7 +128,10 @@ def create_reservation(form):
                 "Check-In": targetCheckInDate.strftime("%m/%d/%Y"),
                 "Check-Out": targetCheckOutDate.strftime("%m/%d/%Y")
             }
+            # freeRoomNumbers ist eine Liste der freien Zimmernummern.
+            # Da jeweils das erste freie Zimmer der jeweiligen Zimmerkategorie für die Reservation gebucht wird, wird pop(0) verwendet. So wird das Zimmer dann aus der Liste entfernt.
             freeRoomNumbers[roomType].pop(0)
+            # Hier wird die neue Reservation zur Tabelle mit den Reservierungen hinzugefügt, wie auch zur Liste mit den Reservierungen.
             reservations.append(newReservation)
             createdReservations.append(newReservation)
 
@@ -148,22 +156,27 @@ def belegung():
         roomTypes = json.loads(file.read())
     # Hier wird definiert, dass die Belegung der nächsten 60 Tage angeschaut wird.
     today = datetime.now()
+    # days ist eine Liste der Daten vom heutigen Zeitpunkt plus 60 Tage.
     days = [today + timedelta(days=x) for x in range(61)]
+    # occupancies ist ein dictionary wobei der "key" die Zimmerkategorie ist und "value" zunächst eine leere Liste.
     occupancies = {}
     graphNames = []
     # für jeden Zimmertyp wird die Belegung seperat analysiert.
     for roomType in roomTypes.keys():
         occupancies[roomType] = []
+        # Dieser Code filtert alle Reservierungen im JSON File Reservationen, indem sie nur die passenden Reservationen der Zimmerkategorie, welche gerade analysiert wird anschaut. (habe gegooglet wie man eine Liste mit solchen Bedinungen filtert :))
         reservationsOfType = list(filter(lambda x: x["Zimmer"].split(" ")[0] == roomType, reservations))
 
         for day in days:
+            # availableRoomsOfType ist die Anzahl der Zimmer der Zimmerkategorie (frei und belegt)
+            # für jede Reservation in der Liste der gefilterten Reservationen wird availableRoomsOfType um 1 verringert, wenn der aktuelle Tag (der analysiert wird) im Bereich [Checkin, Checkout] der Reservation befindet.
             availableRoomsOfType = roomTypes[roomType]["ZimmerNrEnd"] - roomTypes[roomType]["ZimmerNrStart"] + 1
             for reservation in reservationsOfType:
                 checkInDate = datetime.strptime(reservation["Check-In"], "%m/%d/%Y")
                 checkOutDate = datetime.strptime(reservation["Check-Out"], "%m/%d/%Y")
                 if day >= checkInDate and day < checkOutDate:
                     availableRoomsOfType -= 1
-
+            # nachdem alle Reservationen der Zimmerkategorie durchgesehen wurden, wird die endgültige Anzahl der verfügbaren Zimmer zur Liste occupancies[roomType] hinzugefügt.
             occupancies[roomType].append(availableRoomsOfType)
 
         name = f'{roomType}_belegung.png'
